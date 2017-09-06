@@ -16,7 +16,7 @@ abstract public class BaseRecAdapter extends RecyclerView.Adapter implements Vie
     protected OnItemClickListener onItemClickListener;
 
     public static interface OnItemClickListener{
-        void onItemClick(View v, int position);
+        void onItemClick(View itemView, int position);
     }
 
     public BaseRecAdapter(int layoutId){

@@ -46,43 +46,50 @@ public class MusicFinder {
     private static int isMusic;//是否为音乐
 
     public static List<Music> data;
+
+    public static final List<Music> localMusicList  = new ArrayList<Music>();;
+
+    public static final List<Music> netMusicList = null;
+
+    public static final List<Music> allMusicInThePhone = new ArrayList<Music>();
+
     private static ContentResolver resolver;
+
     public static List<Music> selectAll(Context context){
-        List<Music> list = new ArrayList<Music>();
-        resolver = context.getContentResolver();
-        Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null,
-                MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
-        int position = 0;
-        for(int i=0; i < cursor.getCount(); i++){
+        if(allMusicInThePhone.size() == 0){
+            resolver = context.getContentResolver();
+            Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null,
+                    MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+            int position = 0;
+            for(int i=0; i < cursor.getCount(); i++){
 
-            cursor.moveToNext();
-            select(cursor);
+                cursor.moveToNext();
+                select(cursor);
 
-            Music music;
-            if(duration >60000 && isMusic == 1){
-                music = new Music();
-                music.setId(id);
-                music.setAlbum(album);
-                music.setArtist(artist);
-                music.setName(title);
-                music.setAlbum_id(album_id);
-                music.setUri(Uri.parse(url));
-                music.setTime(duration);
-                music.setPosition(i);
-                MediaMetadataRetriever m = new MediaMetadataRetriever();
-                m.setDataSource(context,music.getUri());
-                byte[] bytes = m.getEmbeddedPicture();
-                music.setCover(bytes);
-                /*bitmap.recycle();
-                bitmap = null;*/
-                music.setLocal(true);
-                list.add(music);
-                position++;
+                Music music;
+                if(duration >60000 && isMusic == 1){
+                    music = new Music();
+                    music.setId(id);
+                    music.setAlbum(album);
+                    music.setArtist(artist);
+                    music.setName(title);
+                    music.setAlbum_id(album_id);
+                    music.setUri(Uri.parse(url));
+                    music.setTime(duration);
+                    music.setPosition(i);
+                    MediaMetadataRetriever m = new MediaMetadataRetriever();
+                    m.setDataSource(context,music.getUri());
+                    byte[] bytes = m.getEmbeddedPicture();
+                    music.setCover(bytes);
+                    music.setLocal(true);
+                    allMusicInThePhone.add(music);
+                    position++;
+                }
+
             }
-
+            cursor.close();
         }
-        cursor.close();
-        return list;
+        return allMusicInThePhone;
     }
 
     public static List<Music> selectMusics(Context context,String muiscsName){
@@ -92,8 +99,14 @@ public class MusicFinder {
     }
 
     public static List<Music> selectMusicInPhone(Context context,String name){
-        List<Music> list = new ArrayList<Music>();
-        resolver = context.getContentResolver();
+        localMusicList.removeAll(localMusicList);
+        ArrayList<Music> list = (ArrayList) selectAll(context);
+        for(Music music:list){
+            if(music.getName().equals(name)){
+                localMusicList.add(music);
+            }
+        }
+        /*resolver = context.getContentResolver();
         Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null,
                 MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
         Music music = null;
@@ -115,16 +128,13 @@ public class MusicFinder {
                 m.setDataSource(context,music.getUri());
                 byte[] bytes = m.getEmbeddedPicture();
                 music.setCover(bytes);
-                /*bitmap.recycle();
-                bitmap = null;*/
                 music.setLocal(true);
-                list.add(music);
-
+                localMusicList.add(music);
             }
 
         }
-        cursor.close();
-        return list;
+        cursor.close();*/
+        return localMusicList;
     }
 
     public static List<Music> selectMusicByNet(Context context,String name){
@@ -168,7 +178,7 @@ public class MusicFinder {
         return music;
     }
 
-    public static List<Music> selectMusic(Context context,String name){
+    public static List<Music> selectMusicByName(Context context, String name){
         List<Music> list = new ArrayList<Music>();
         list.addAll(selectMusicInPhone(context,name));
         list.addAll(selectMusicByNet(context,name));

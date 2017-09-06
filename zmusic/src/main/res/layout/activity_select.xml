@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#00000000">
 
     <RelativeLayout
+        android:id="@+id/result_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
         <EditText
@@ -17,7 +18,7 @@
             android:theme="@style/MyEdit"/>
 
         <Button
-            android:id="@+id/resule_findbtn"
+            android:id="@+id/result_findbtn"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:background="@drawable/icon_findd"
@@ -26,8 +27,18 @@
             android:layout_marginRight="16dp" />
     </RelativeLayout>
 
-    <RelativeLayout
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/result_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_below="@id/result_bar"/>
+
+    <TextView
+        android:id="@+id/resule_none"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="找不到这首歌呢0_o"
+        android:visibility="invisible"
+        android:textColor="@color/textColor"
+        android:layout_centerInParent="true"/>
+</RelativeLayout>

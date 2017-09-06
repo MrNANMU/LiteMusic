@@ -96,18 +96,6 @@ public class AllFragment extends BaseFragment {
                 }
             }
         });
-        if(bundle != null){
-            Log.d("ZLogcat","bundle is not null,position is "+bundle.getInt("ONCLICK_POSITION"));
-            this.adapter.isCheckedPosition = bundle.getInt("ONCLICK_POSITION");
-            View newView = this.asfm_all.getChildAt(this.adapter.isCheckedPosition);
-            if(newView != null){
-                AllSongRecAdapter.AllsongHolder newHolder =  (AllSongRecAdapter.AllsongHolder) this.asfm_all.getChildViewHolder(newView);
-                TextView item_name = newHolder.itemView.findViewById(R.id.item_name);
-                TextView item_art_ablum = newHolder.itemView.findViewById(R.id.item_art_album);
-                item_name.setTextColor(this.getContext().getResources().getColor(R.color.colorPrimary));
-                item_art_ablum.setTextColor(this.getContext().getResources().getColor(R.color.colorPrimary));
-            }
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
