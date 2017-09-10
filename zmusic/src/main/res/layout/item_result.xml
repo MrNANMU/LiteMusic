@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="56dp">
+
+    <TextView
+        android:id="@+id/item_resule_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:textSize="12sp"
+        android:textColor="#0f0f0f"
+        android:text="测试"/>
+    <TextView
+        android:id="@+id/item_resule_art_album"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:textColor="#0f0f0f"
+        android:text="测试-测试"
+        android:layout_above="@+id/item_resule_view"
+        android:layout_alignLeft="@+id/item_resule_view"
+        android:layout_alignStart="@+id/item_resule_view"
+        android:layout_marginBottom="8dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#bdbdbd"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/item_resule_view" />
+
+    <ImageView
+        android:id="@+id/item_resule_local"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/icon_netd"
+        android:scaleType="centerCrop"
+        android:layout_centerVertical="true"
+        android:layout_alignRight="@+id/item_resule_view"
+        android:layout_alignEnd="@+id/item_resule_view" />
+
+</RelativeLayout>
