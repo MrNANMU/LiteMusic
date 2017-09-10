@@ -12,6 +12,9 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
@@ -30,6 +33,7 @@ import com.dasong.zmusic.R;
 
 import com.dasong.zmusic.background.service.MusicService;
 import com.dasong.zmusic.model.adapter.MyPagerAdapter;
+import com.dasong.zmusic.model.adapter.ShowPageAdapter;
 import com.dasong.zmusic.model.bean.Music;
 import com.dasong.zmusic.model.config.ConfigXML;
 import com.dasong.zmusic.model.config.PlayModel;
@@ -40,6 +44,7 @@ import com.dasong.zmusic.model.msg.OnMusicStartMsg;
 import com.dasong.zmusic.model.msg.OnMusicStateChangedMsg;
 import com.dasong.zmusic.model.msg.OnNextMusicMsg;
 import com.dasong.zmusic.model.msg.OnSeekBarTouchMsg;
+import com.dasong.zmusic.model.msg.OnShowPageMsg;
 import com.dasong.zmusic.model.msg.OnUpdateSeekMsg;
 import com.dasong.zmusic.ui.base.BaseActivity;
 import com.dasong.zmusic.ui.base.BaseFragment;
@@ -47,6 +52,7 @@ import com.dasong.zmusic.ui.fragment.AlbumFragment;
 import com.dasong.zmusic.ui.fragment.AllFragment;
 import com.dasong.zmusic.ui.fragment.ArtistFragment;
 import com.dasong.zmusic.ui.fragment.MusicListFragment;
+import com.dasong.zmusic.ui.fragment.SelectFragment;
 import com.dasong.zmusic.utils.MusicFinder;
 import com.dasong.zmusic.utils.PixUtils;
 
@@ -67,6 +73,9 @@ public class MainActivity extends BaseActivity {
 
     private SharedPreferences config;
 
+    private FragmentManager showPageManager = this.getSupportFragmentManager();
+    private FragmentTransaction showPageTransaction;
+
     private Toolbar bar_main_title;
     private Button btn_main_find;
     private RelativeLayout player_console;
@@ -84,6 +93,8 @@ public class MainActivity extends BaseActivity {
     private ArtistFragment artistFragment;
     private List<BaseFragment> fragments;
     private List<String> titles;
+    private ShowPageAdapter showPageAdapter;
+    public Fragment main_showFrag,main_showPage;
 
     public List<Music> musicList;
 
@@ -121,6 +132,7 @@ public class MainActivity extends BaseActivity {
                     this.startMusicService();
                     this.createConfig();
                     this.initConsole();
+                    this.initShowPager();
                 }else{
                     Toast.makeText(this,"需要权限搜索本地音乐，即将退出",Toast.LENGTH_SHORT).show();
                     try {
@@ -144,8 +156,8 @@ public class MainActivity extends BaseActivity {
         SharedPreferences.Editor editor = this.config.edit();
         editor.putLong(UserConfig.LASTPLAYMUSICID,this.musicBinder.getPlayingMusic().getId());
         editor.commit();
-        this.unbindService(this.musicServiceConnection);
-        this.stopService(new Intent(this,MusicService.class));
+        //this.unbindService(this.musicServiceConnection);
+        //this.stopService(new Intent(this,MusicService.class));
         EventBus.getDefault().unregister(this);
         super.onDestroy();
 
@@ -167,6 +179,7 @@ public class MainActivity extends BaseActivity {
             this.startMusicService();
             this.createConfig();
             this.initConsole();
+            this.initShowPager();
         }
     }
 
@@ -186,14 +199,18 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    //初始化ViewPager和Fragment
+    //初始化主页四个ViewPager和Fragment
     private void initMain(){
         this.btn_main_find = this.findView(R.id.btn_main_find);
         this.btn_main_find.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,SelelctActivity.class);
-                MainActivity.this.startActivity(intent);
+                MainActivity.this.showPageManager = MainActivity.this.getSupportFragmentManager();
+                MainActivity.this.showPageTransaction = MainActivity.this.showPageManager.beginTransaction();
+                MainActivity.this.showPageTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                MainActivity.this.showPageTransaction.show(MainActivity.this.main_showFrag);
+                MainActivity.this.showPageTransaction.addToBackStack(null);
+                MainActivity.this.showPageTransaction.commit();
             }
         });
         this.bar_tab = this.findView(R.id.bar_tab);
@@ -220,6 +237,16 @@ public class MainActivity extends BaseActivity {
         this.main_pager.setAdapter(this.adapter);
         this.main_pager.setOffscreenPageLimit(4);
         this.bar_tab.setupWithViewPager(this.main_pager);
+    }
+
+    //初始化展示页的View
+    private void initShowPager(){
+        this.main_showFrag = this.showPageManager.findFragmentById(R.id.main_showFrag);
+        this.main_showPage = this.showPageManager.findFragmentById(R.id.main_showPage);
+        this.showPageTransaction = this.showPageManager.beginTransaction();
+        this.showPageTransaction.hide(this.main_showFrag);
+        this.showPageTransaction.hide(this.main_showPage);
+        this.showPageTransaction.commit();
     }
 
     //初始上拉播放界面和首页悬浮按钮
@@ -446,6 +473,13 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    public void showMusicPage(int pageTag){
+        switch (pageTag){
+            case 1:
+                //
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateViews(OnNextMusicMsg msg){
         Music m = msg.nextMusic;
@@ -509,7 +543,16 @@ public class MainActivity extends BaseActivity {
             //上拉按钮图标
             this.player_play.setImageDrawable(this.getResources().getDrawable(R.drawable.icon_playd));
         }
-
     }
+
+    ///*
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowPageListener(OnShowPageMsg msg){
+        this.showPageTransaction = this.showPageManager.beginTransaction();
+        this.showPageTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        this.showPageTransaction.show(this.main_showPage);
+        this.showPageTransaction.addToBackStack(null);
+        this.showPageTransaction.commit();
+    }//*/
 
 }

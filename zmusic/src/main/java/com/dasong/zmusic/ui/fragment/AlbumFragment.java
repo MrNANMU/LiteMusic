@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter;
@@ -17,10 +18,13 @@ import android.widget.SimpleAdapter;
 import com.dasong.zmusic.R;
 import com.dasong.zmusic.model.adapter.AlbumRecAdapter;
 import com.dasong.zmusic.model.bean.Music;
+import com.dasong.zmusic.model.msg.OnShowPageMsg;
 import com.dasong.zmusic.ui.activity.MainActivity;
 import com.dasong.zmusic.ui.base.BaseFragment;
 import com.dasong.zmusic.utils.MusicOrder;
 import com.dasong.zmusic.utils.PixUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +40,6 @@ public class AlbumFragment extends BaseFragment {
 
     private RecyclerView albumRecView;
     private MainActivity activity;
-    private View view;
     private List<String> albumList;
     private Map<String,List<Music>> albumMap;
     private List<Music> musicList;
@@ -104,6 +107,12 @@ public class AlbumFragment extends BaseFragment {
                 }else{
                     return false;
                 }
+            }
+        });
+        this.albumGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                EventBus.getDefault().post(new OnShowPageMsg().setWhichPage(OnShowPageMsg.ALBUM_FRAGMENT));
             }
         });
 

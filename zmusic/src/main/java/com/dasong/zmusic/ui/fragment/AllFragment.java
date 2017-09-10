@@ -30,7 +30,6 @@ import java.util.List;
 
 public class AllFragment extends BaseFragment {
 
-    private View view;
     private RecyclerView asfm_all;
     private List<Music> datas;
     private AllSongRecAdapter adapter;

@@ -32,14 +32,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="16dp" />
-            <!--<EditText
-                android:id="@+id/bar_select"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginLeft="16dp"
-                android:theme="@style/MyEdit"
-                android:textColor="@color/light"/>-->
         </RelativeLayout>
 
         <android.support.design.widget.TabLayout
@@ -71,6 +63,20 @@
                 android:layout_height="?attr/actionBarSize"/>
         </LinearLayout>
 
+        <fragment
+            android:id="@+id/main_showFrag"
+            android:name="com.dasong.zmusic.ui.fragment.SelectFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <fragment
+            android:id="@+id/main_showPage"
+            android:name="com.dasong.zmusic.ui.fragment.MusicPageFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
         <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -86,10 +92,6 @@
                 app:layout_behavior="@string/bottom_sheet_behavior" />
         </android.support.design.widget.CoordinatorLayout>
     </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"></RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -11,10 +11,14 @@ import android.view.ViewGroup;
 
 import com.dasong.zmusic.R;
 import com.dasong.zmusic.model.adapter.ArtistRecAdapter;
+import com.dasong.zmusic.model.adapter.BaseRecAdapter;
 import com.dasong.zmusic.model.bean.Music;
+import com.dasong.zmusic.model.msg.OnShowPageMsg;
 import com.dasong.zmusic.ui.activity.MainActivity;
 import com.dasong.zmusic.ui.base.BaseFragment;
 import com.dasong.zmusic.utils.MusicOrder;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +30,6 @@ import java.util.Map;
 public class ArtistFragment extends BaseFragment {
 
     private MainActivity activity;
-    private View view;
     private RecyclerView artRecView;
     private List<String> artList;
     private Map<String,List<Music>> artMap;
@@ -73,6 +76,12 @@ public class ArtistFragment extends BaseFragment {
         this.manager.setOrientation(LinearLayoutManager.VERTICAL);
         this.artRecView.setLayoutManager(this.manager);
         this.artRecView.setAdapter(this.adapter);
+        this.adapter.setOnItemClickListener(new BaseRecAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                EventBus.getDefault().post(new OnShowPageMsg().setWhichPage(OnShowPageMsg.ARTIST_FRAGMENT));
+            }
+        });
     }
 
 
