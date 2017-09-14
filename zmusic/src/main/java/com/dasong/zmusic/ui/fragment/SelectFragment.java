@@ -17,10 +17,8 @@ import com.dasong.zmusic.model.adapter.BaseRecAdapter;
 import com.dasong.zmusic.model.adapter.ResultRecAdapter;
 import com.dasong.zmusic.model.bean.Music;
 import com.dasong.zmusic.model.listener.MusicSelectListener;
-import com.dasong.zmusic.ui.activity.SelelctActivity;
 import com.dasong.zmusic.ui.base.BaseFragment;
-import com.dasong.zmusic.ui.base.ShowFragment;
-import com.dasong.zmusic.utils.MusicFinder;
+import com.dasong.zmusic.utils.onlythis.MusicFinder;
 
 import java.util.ArrayList;
 import java.util.List;

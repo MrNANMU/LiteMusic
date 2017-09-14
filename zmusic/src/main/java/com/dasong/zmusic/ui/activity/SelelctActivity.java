@@ -6,10 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dasong.zmusic.R;
@@ -18,9 +16,7 @@ import com.dasong.zmusic.model.adapter.ResultRecAdapter;
 import com.dasong.zmusic.model.bean.Music;
 import com.dasong.zmusic.model.listener.MusicSelectListener;
 import com.dasong.zmusic.ui.base.BaseActivity;
-import com.dasong.zmusic.utils.MusicFinder;
-
-import org.greenrobot.eventbus.EventBus;
+import com.dasong.zmusic.utils.onlythis.MusicFinder;
 
 import java.util.List;
 

@@ -1,14 +1,9 @@
 package com.dasong.zmusic.model.bean;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
 
-import com.dasong.zmusic.utils.BitMapUtil;
-
-import java.io.Serializable;
+import com.dasong.zmusic.utils.universal.BitMapUtil;
 
 /**
  * Created by dason on 2017/8/21 0021.

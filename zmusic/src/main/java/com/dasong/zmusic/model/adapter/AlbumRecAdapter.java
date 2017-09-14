@@ -3,15 +3,13 @@ package com.dasong.zmusic.model.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dasong.zmusic.R;
 import com.dasong.zmusic.model.bean.Music;
-import com.dasong.zmusic.utils.MusicOrder;
-import com.dasong.zmusic.utils.PixUtils;
+import com.dasong.zmusic.utils.universal.PixUtils;
 
 import java.util.ArrayList;
 import java.util.List;

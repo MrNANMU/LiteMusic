@@ -1,4 +1,4 @@
-package com.dasong.zmusic.utils;
+package com.dasong.zmusic.utils.universal;
 
 import android.content.Context;
 

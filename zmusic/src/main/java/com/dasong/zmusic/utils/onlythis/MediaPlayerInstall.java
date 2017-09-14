@@ -1,4 +1,4 @@
-package com.dasong.zmusic.utils;
+package com.dasong.zmusic.utils.onlythis;
 
 import android.media.MediaPlayer;
 import android.print.PageRange;

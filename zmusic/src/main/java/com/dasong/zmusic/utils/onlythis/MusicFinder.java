@@ -1,22 +1,16 @@
-package com.dasong.zmusic.utils;
+package com.dasong.zmusic.utils.onlythis;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
 import com.dasong.zmusic.model.bean.Music;
-import com.squareup.picasso.Picasso;
+import com.dasong.zmusic.model.listener.MusicSelectListener;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,9 +86,44 @@ public class MusicFinder {
         return allMusicInThePhone;
     }
 
+    public static List<Music> selectAll(Context context,MusicSelectListener listener){
+        if(allMusicInThePhone.size() == 0){
+            resolver = context.getContentResolver();
+            Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null,
+                    MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+            int position = 0;
+            for(int i=0; i < cursor.getCount(); i++){
+
+                cursor.moveToNext();
+                select(cursor);
+                Music music;
+                if(duration >60000 && isMusic == 1){
+                    music = new Music();
+                    music.setId(id);
+                    music.setAlbum(album);
+                    music.setArtist(artist);
+                    music.setName(title);
+                    music.setAlbum_id(album_id);
+                    music.setUri(Uri.parse(url));
+                    music.setTime(duration);
+                    music.setPosition(i);
+                    MediaMetadataRetriever m = new MediaMetadataRetriever();
+                    m.setDataSource(context,music.getUri());
+                    byte[] bytes = m.getEmbeddedPicture();
+                    music.setCover(bytes);
+                    music.setLocal(true);
+                    allMusicInThePhone.add(music);
+                    position++;
+                }
+
+            }
+            cursor.close();
+        }
+        return allMusicInThePhone;
+    }
+
     public static List<Music> selectMusics(Context context,String muiscsName){
         List<Music> list = new ArrayList<Music>();
-
         return list;
     }
 
@@ -106,34 +135,6 @@ public class MusicFinder {
                 localMusicList.add(music);
             }
         }
-        /*resolver = context.getContentResolver();
-        Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null,
-                MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
-        Music music = null;
-        for(int i=0; i < cursor.getCount(); i++){
-
-            cursor.moveToNext();
-            select(cursor);
-
-            if(title.equals(name) && isMusic == 1){
-                music = new Music();
-                music.setId(id);
-                music.setAlbum(album);
-                music.setArtist(artist);
-                music.setName(title);
-                music.setAlbum_id(album_id);
-                music.setUri(Uri.parse(url));
-                music.setTime(duration);
-                MediaMetadataRetriever m = new MediaMetadataRetriever();
-                m.setDataSource(context,music.getUri());
-                byte[] bytes = m.getEmbeddedPicture();
-                music.setCover(bytes);
-                music.setLocal(true);
-                localMusicList.add(music);
-            }
-
-        }
-        cursor.close();*/
         return localMusicList;
     }
 
@@ -179,6 +180,13 @@ public class MusicFinder {
     }
 
     public static List<Music> selectMusicByName(Context context, String name){
+        List<Music> list = new ArrayList<Music>();
+        list.addAll(selectMusicInPhone(context,name));
+        list.addAll(selectMusicByNet(context,name));
+        return list;
+    }
+
+    public static List<Music> selectMusicByName(Context context, String name, MusicSelectListener listener){
         List<Music> list = new ArrayList<Music>();
         list.addAll(selectMusicInPhone(context,name));
         list.addAll(selectMusicByNet(context,name));

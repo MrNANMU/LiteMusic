@@ -21,8 +21,8 @@ import com.dasong.zmusic.model.bean.Music;
 import com.dasong.zmusic.model.msg.OnShowPageMsg;
 import com.dasong.zmusic.ui.activity.MainActivity;
 import com.dasong.zmusic.ui.base.BaseFragment;
-import com.dasong.zmusic.utils.MusicOrder;
-import com.dasong.zmusic.utils.PixUtils;
+import com.dasong.zmusic.utils.onlythis.MusicOrder;
+import com.dasong.zmusic.utils.universal.PixUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by dason on 2017/8/19 0019.

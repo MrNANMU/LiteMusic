@@ -8,8 +8,6 @@ import android.widget.TextView;
 
 import com.dasong.zmusic.R;
 import com.dasong.zmusic.model.bean.Music;
-import com.dasong.zmusic.model.listener.MusicSelectListener;
-import com.dasong.zmusic.utils.PixUtils;
 
 import java.util.List;
 

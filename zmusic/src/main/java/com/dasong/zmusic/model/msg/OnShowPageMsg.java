@@ -14,6 +14,7 @@ public class OnShowPageMsg {
 
     public int whichPage;
     public String whichItem;
+    public int whichPosition;
 
     public OnShowPageMsg(){}
 
@@ -29,6 +30,11 @@ public class OnShowPageMsg {
 
     public OnShowPageMsg setWhichItem(String whichItem){
         this.whichItem = whichItem;
+        return this;
+    }
+
+    public OnShowPageMsg setWhichPosition(int whichPosition){
+        this.whichPosition = whichPosition;
         return this;
     }
 

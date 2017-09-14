@@ -29,9 +29,9 @@ import com.dasong.zmusic.model.msg.OnMusicStateChangedMsg;
 import com.dasong.zmusic.model.msg.OnNextMusicMsg;
 import com.dasong.zmusic.model.msg.OnSeekBarTouchMsg;
 import com.dasong.zmusic.model.msg.OnUpdateSeekMsg;
-import com.dasong.zmusic.utils.MediaPlayerInstall;
+import com.dasong.zmusic.utils.onlythis.MediaPlayerInstall;
 import com.dasong.zmusic.ui.activity.MainActivity;
-import com.dasong.zmusic.utils.MusicFinder;
+import com.dasong.zmusic.utils.onlythis.MusicFinder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

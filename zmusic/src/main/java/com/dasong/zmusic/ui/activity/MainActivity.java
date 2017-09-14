@@ -33,7 +33,7 @@ import com.dasong.zmusic.R;
 
 import com.dasong.zmusic.background.service.MusicService;
 import com.dasong.zmusic.model.adapter.MyPagerAdapter;
-import com.dasong.zmusic.model.adapter.ShowPageAdapter;
+import com.dasong.zmusic.model.adapter.ShowPageRecAdapter;
 import com.dasong.zmusic.model.bean.Music;
 import com.dasong.zmusic.model.config.ConfigXML;
 import com.dasong.zmusic.model.config.PlayModel;
@@ -52,9 +52,8 @@ import com.dasong.zmusic.ui.fragment.AlbumFragment;
 import com.dasong.zmusic.ui.fragment.AllFragment;
 import com.dasong.zmusic.ui.fragment.ArtistFragment;
 import com.dasong.zmusic.ui.fragment.MusicListFragment;
-import com.dasong.zmusic.ui.fragment.SelectFragment;
-import com.dasong.zmusic.utils.MusicFinder;
-import com.dasong.zmusic.utils.PixUtils;
+import com.dasong.zmusic.utils.onlythis.MusicFinder;
+import com.dasong.zmusic.utils.universal.PixUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -93,7 +92,7 @@ public class MainActivity extends BaseActivity {
     private ArtistFragment artistFragment;
     private List<BaseFragment> fragments;
     private List<String> titles;
-    private ShowPageAdapter showPageAdapter;
+    private ShowPageRecAdapter showPageAdapter;
     public Fragment main_showFrag,main_showPage;
 
     public List<Music> musicList;

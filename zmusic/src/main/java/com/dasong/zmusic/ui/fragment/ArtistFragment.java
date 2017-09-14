@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.dasong.zmusic.R;
 import com.dasong.zmusic.model.adapter.ArtistRecAdapter;
@@ -16,7 +17,7 @@ import com.dasong.zmusic.model.bean.Music;
 import com.dasong.zmusic.model.msg.OnShowPageMsg;
 import com.dasong.zmusic.ui.activity.MainActivity;
 import com.dasong.zmusic.ui.base.BaseFragment;
-import com.dasong.zmusic.utils.MusicOrder;
+import com.dasong.zmusic.utils.onlythis.MusicOrder;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -79,7 +80,8 @@ public class ArtistFragment extends BaseFragment {
         this.adapter.setOnItemClickListener(new BaseRecAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-                EventBus.getDefault().post(new OnShowPageMsg().setWhichPage(OnShowPageMsg.ARTIST_FRAGMENT));
+                String art = ((TextView)itemView.findViewById(R.id.item_art)).getText().toString();
+                EventBus.getDefault().post(new OnShowPageMsg().setWhichPage(OnShowPageMsg.ARTIST_FRAGMENT).setWhichPosition(position).setWhichItem(art));
             }
         });
     }
