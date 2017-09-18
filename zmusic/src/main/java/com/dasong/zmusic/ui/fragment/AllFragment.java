@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.dasong.zmusic.R;
 import com.dasong.zmusic.model.adapter.AllSongRecAdapter;
 import com.dasong.zmusic.model.bean.Music;
+import com.dasong.zmusic.model.control.ItemClickEvent;
 import com.dasong.zmusic.model.msg.OnItemClickMsg;
 import com.dasong.zmusic.model.msg.OnMusicStartMsg;
 import com.dasong.zmusic.ui.activity.MainActivity;
@@ -73,26 +74,8 @@ public class AllFragment extends BaseFragment {
         this.adapter.setOnItemClickListener(new AllSongRecAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                Log.d("ZLogcat","AllFragment.OnItemClickListener is run...");
-                if(AllFragment.this.adapter.isCheckedPosition != position){
-                    View oldView = AllFragment.this.asfm_all.getChildAt(AllFragment.this.adapter.isCheckedPosition);
-                    if(oldView != null){
-                        AllSongRecAdapter.AllsongHolder holder =  (AllSongRecAdapter.AllsongHolder) AllFragment.this.asfm_all.getChildViewHolder(oldView);
-                        TextView olditem_name = holder.itemView.findViewById(R.id.item_name);
-                        TextView olditem_art_ablum = holder.itemView.findViewById(R.id.item_art_album);
-                        olditem_name.setTextColor(v.getContext().getResources().getColor(R.color.textColor));
-                        olditem_art_ablum.setTextColor(v.getContext().getResources().getColor(R.color.textColor));
-                    }
-                    TextView item_name = v.findViewById(R.id.item_name);
-                    TextView item_art_ablum = v.findViewById(R.id.item_art_album);
-                    item_name.setTextColor(v.getContext().getResources().getColor(R.color.colorPrimary));
-                    item_art_ablum.setTextColor(v.getContext().getResources().getColor(R.color.colorPrimary));
-                    AllFragment.this.adapter.isCheckedPosition = position;
-                    Log.d("ZLogcat","OnClick->"+position);
-                    OnItemClickMsg msg = new OnItemClickMsg();
-                    msg.setPosition(position);
-                    EventBus.getDefault().post(msg);
-                }
+                Log.d("ZLogcat","");
+                ItemClickEvent.post(AllFragment.this.asfm_all,AllFragment.this.adapter,v,position);
             }
         });
     }

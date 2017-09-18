@@ -5,7 +5,7 @@ package com.dasong.zmusic.model.config;
  * 音乐播放器的播放模式
  */
 
-public class PlayModel {
+public class PlayMode {
 
     public static final int SINGLE = 0;
     public static final int LOOP = 1;

@@ -1,7 +1,6 @@
 package com.dasong.zmusic.background.service;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -20,8 +19,9 @@ import com.dasong.zmusic.R;
 import com.dasong.zmusic.model.bean.Music;
 import com.dasong.zmusic.model.config.AppAction;
 import com.dasong.zmusic.model.config.ConfigXML;
-import com.dasong.zmusic.model.config.PlayModel;
+import com.dasong.zmusic.model.config.PlayMode;
 import com.dasong.zmusic.model.config.UserConfig;
+import com.dasong.zmusic.model.control.PlayerManager;
 import com.dasong.zmusic.model.msg.OnItemClickMsg;
 import com.dasong.zmusic.model.msg.OnMusicStartMsg;
 import com.dasong.zmusic.model.msg.OnMusicModelChangeMsg;
@@ -70,14 +70,18 @@ public class MusicService extends Service {
 
     private List<Music> musicList;
 
+    private final PlayerManager playerManager = PlayerManager.create(this,MusicFinder.getAll(this));
+
     public class MusicBinder extends Binder{
 
         public void setMusicList(List<Music> musicList){
-            MusicService.this.musicList = musicList;
+            //MusicService.this.musicList = musicList;
+            playerManager.setMusicList(musicList);
         }
 
         public Music getPlayingMusic(){
-            return MusicService.this.isPlayingMusic;
+            //return MusicService.this.isPlayingMusic;
+            return playerManager.getPlayingMusic();
         }
 
         public void startMusic(){
@@ -89,27 +93,32 @@ public class MusicService extends Service {
         }
 
         public void pause(){
-            MusicService.this.pause();
+            //MusicService.this.pause();
+            playerManager.pause();
         }
 
         public void nextMusic(){
-            MusicService.this.next();
+            playerManager.next();
         }
 
         public void lastMusic(){
-            MusicService.this.last();
+            //MusicService.this.playerManager.last();
+            playerManager.last();
         }
 
         public boolean isPlaying(){
-            return MusicService.this.player.isPlaying();
+            //return MusicService.this.playerManager.isPlaying();
+            return playerManager.isPlaying();
         }
 
         public int getPlayingMusicPosition(){
-            return MusicService.this.isPlayingPosition;
+            //return MusicService.this.isPlayingPosition;
+            return playerManager.getPosition();
         }
 
         public Music getMusicByPosition(int position){
-            return MusicService.this.musicList.get(position);
+            //return MusicService.this.musicList.get(position);
+            return playerManager.getPlayingMusicList().get(position);
         }
     }
 
@@ -124,7 +133,6 @@ public class MusicService extends Service {
         Log.d("ZLogcat","onCreate");
         this.initService();
         this.startMusicNotification();
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -136,7 +144,7 @@ public class MusicService extends Service {
     @Override
     public void onDestroy() {
         this.stopForeground(true);
-        if(this.player.isPlaying()){
+        /*if(this.player.isPlaying()){
             this.player.reset();
             //this.player.release();
             //添加此句会导致下次启动的时候报错，原因未知
@@ -146,16 +154,18 @@ public class MusicService extends Service {
             //this.player.release();
             //添加此句会导致下次启动的时候报错，原因未知
         }
-        EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this);*/
+        playerManager.close();
         super.onDestroy();
     }
 
     private void initService(){
-        this.musicList = MusicFinder.getAll(this);
+        /*this.musicList = MusicFinder.getAll(this);
         this.config = this.getSharedPreferences(ConfigXML.USER_CONFIG, Context.MODE_PRIVATE);
         this.isPlayingMusic = MusicFinder.selectMusicById(this,this.config.getLong(UserConfig.LASTPLAYMUSICID,this.musicList.get(0).getId()));
         this.isPlayingPosition = this.isPlayingMusic.getPosition();
-        this.playModel = this.config.getInt(UserConfig.PLAYMODEL,PlayModel.UNKNOUN);
+        this.playModel = this.config.getInt(UserConfig.PLAYMODEL, PlayMode.UNKNOUN);*/
+        playerManager.open();
     }
 
     private void startMusicNotification(){
@@ -203,24 +213,6 @@ public class MusicService extends Service {
              this.bRm.setImageViewResource(R.id.remote_play,R.drawable.icon_play);
          }
          this.setNotificationEvent();
-     }
-
-     private void startMusic(){
-         if(this.isPlaying){
-             Toast.makeText(this,"暂停",Toast.LENGTH_SHORT).show();
-             this.lRm.setImageViewResource(R.id.remote_play_lite,R.drawable.icon_play);
-             this.bRm.setImageViewResource(R.id.remote_play,R.drawable.icon_play);
-             NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-             manager.notify(1,this.musicControl);
-             this.isPlaying = false;
-         }else{
-             Toast.makeText(this,"播放",Toast.LENGTH_SHORT).show();
-             this.lRm.setImageViewResource(R.id.remote_play_lite,R.drawable.icon_pause);
-             this.bRm.setImageViewResource(R.id.remote_play,R.drawable.icon_pause);
-             NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-             manager.notify(1,this.musicControl);
-             this.isPlaying = true;
-         }
      }
 
      //单曲循环
@@ -371,20 +363,20 @@ public class MusicService extends Service {
      */
     private void startPlayingByMode(){
         switch (this.playModel){
-            case PlayModel.LOOP :
+            case PlayMode.LOOP :
                 this.playInLoopMode();
                 break;
-            case PlayModel.RANDOM :
+            case PlayMode.RANDOM :
                 this.playInRandomMode();
                 break;
-            case PlayModel.SINGLE :
+            case PlayMode.SINGLE :
                 this.playInSingleMode();
                 break;
-            case PlayModel.UNKNOUN :
+            case PlayMode.UNKNOUN :
                 this.playInLoopMode();
                 break;
             default :
-                this.playModel = PlayModel.UNKNOUN;
+                this.playModel = PlayMode.UNKNOUN;
                 this.startPlayingByMode();
                 break;
         }
@@ -397,7 +389,7 @@ public class MusicService extends Service {
         OnMusicStartMsg msg;
         OnNextMusicMsg next;
         switch (this.playModel){
-            case PlayModel.LOOP:
+            case PlayMode.LOOP:
                 this.player.reset();
                 if(this.isPlayingPosition + 1 == this.musicList.size()){
                     this.isPlayingPosition = 0;
@@ -420,7 +412,7 @@ public class MusicService extends Service {
                 }
                 this.playInLoopMode();
                 break;
-            case PlayModel.RANDOM:
+            case PlayMode.RANDOM:
                 this.player.reset();
                 Random random = new Random();
                 int newPosition = random.nextInt(this.musicList.size());
@@ -437,7 +429,7 @@ public class MusicService extends Service {
                 EventBus.getDefault().post(next);
                 this.playInRandomMode();
                 break;
-            case PlayModel.SINGLE:
+            case PlayMode.SINGLE:
                 this.player.reset();
                 if(this.isPlayingPosition + 1 == this.musicList.size()){
                     this.isPlayingPosition = 0;
@@ -460,12 +452,12 @@ public class MusicService extends Service {
                 }
                 this.playInSingleMode();
                 break;
-            case PlayModel.UNKNOUN:
-                this.playModel = PlayModel.LOOP;
+            case PlayMode.UNKNOUN:
+                this.playModel = PlayMode.LOOP;
                 this.next();
                 break;
             default:
-                this.playModel = PlayModel.LOOP;
+                this.playModel = PlayMode.LOOP;
                 this.next();
                 break;
         }
@@ -475,7 +467,7 @@ public class MusicService extends Service {
         OnMusicStartMsg msg;
         OnNextMusicMsg next;
         switch (this.playModel){
-            case PlayModel.LOOP:
+            case PlayMode.LOOP:
                 this.player.reset();
                 if(this.isPlayingPosition == 0){
                     this.isPlayingPosition = this.musicList.size() - 1;
@@ -498,11 +490,11 @@ public class MusicService extends Service {
                 }
                 this.playInLoopMode();
                 break;
-            case PlayModel.RANDOM:
-                //随机播放模式下上一首也是随机出来的，并没有一个顺序直说
+            case PlayMode.RANDOM:
+                //随机播放模式下上一首也是随机出来的，并没有一个顺序之说
                 this.next();
                 break;
-            case PlayModel.SINGLE:
+            case PlayMode.SINGLE:
                 this.player.reset();
                 if(this.isPlayingPosition == 0){
                     this.isPlayingPosition = this.musicList.size() - 1;
@@ -525,20 +517,20 @@ public class MusicService extends Service {
                 }
                 this.playInSingleMode();
                 break;
-            case PlayModel.UNKNOUN:
-                this.playModel = PlayModel.LOOP;
+            case PlayMode.UNKNOUN:
+                this.playModel = PlayMode.LOOP;
                 this.next();
                 break;
             default:
-                this.playModel = PlayModel.LOOP;
+                this.playModel = PlayMode.LOOP;
                 this.next();
                 break;
         }
     }
 
-    /**
+/*    *//**
      * 点击播放列表的时候会触发此事件，并播放指定的音乐
-     */
+     *//*
      @Subscribe(threadMode = ThreadMode.POSTING)
      public void playByClickItem(OnItemClickMsg msg){
          if(this.player.isPlaying()){
@@ -551,9 +543,9 @@ public class MusicService extends Service {
          this.startPlayingByMode();
      }
 
-    /**
+    *//**
      * 切换播放模式时触发
-     */
+     *//*
      @Subscribe(threadMode = ThreadMode.POSTING)
      public void setPlayModel(OnMusicModelChangeMsg msg){
          this.playModel = msg.model;
@@ -561,7 +553,7 @@ public class MusicService extends Service {
              this.player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                  @Override
                  public void onCompletion(MediaPlayer mediaPlayer) {
-                     if(MusicService.this.playModel != PlayModel.SINGLE){
+                     if(MusicService.this.playModel != PlayMode.SINGLE){
                          MusicService.this.next();
                      }else{
                          mediaPlayer.reset();
@@ -575,12 +567,12 @@ public class MusicService extends Service {
          }
      }
 
-    /**
+    *//**
      * 拖动控制条时的事件，三种状态：
      * 1.正在播放时拖动
      * 2.mediaplayer没有Prepare时拖动
      * 3.歌曲处于暂停状态的时候拖动
-     */
+     *//*
     @Subscribe(threadMode = ThreadMode.POSTING)
      public void changProess(final OnSeekBarTouchMsg msg){
          if(this.player.isPlaying()){
@@ -656,6 +648,6 @@ public class MusicService extends Service {
                  });
              }
          }
-     }
+     }*/
 
 }

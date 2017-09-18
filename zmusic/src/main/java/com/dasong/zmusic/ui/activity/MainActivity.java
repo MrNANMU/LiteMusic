@@ -36,7 +36,7 @@ import com.dasong.zmusic.model.adapter.MyPagerAdapter;
 import com.dasong.zmusic.model.adapter.ShowPageRecAdapter;
 import com.dasong.zmusic.model.bean.Music;
 import com.dasong.zmusic.model.config.ConfigXML;
-import com.dasong.zmusic.model.config.PlayModel;
+import com.dasong.zmusic.model.config.PlayMode;
 import com.dasong.zmusic.model.config.UserConfig;
 import com.dasong.zmusic.model.msg.OnItemClickMsg;
 import com.dasong.zmusic.model.msg.OnMusicModelChangeMsg;
@@ -193,7 +193,7 @@ public class MainActivity extends BaseActivity {
         if(config.getInt(UserConfig.FIRSTLOAD,0) == 0){
             SharedPreferences.Editor editor = config.edit();
             editor.putInt(UserConfig.FIRSTLOAD,1);
-            editor.putInt(UserConfig.PLAYMODEL, PlayModel.LOOP);
+            editor.putInt(UserConfig.PLAYMODEL, PlayMode.LOOP);
             editor.commit();
         }
     }
@@ -268,6 +268,7 @@ public class MainActivity extends BaseActivity {
         this.player_playbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("ZLogcat","悬浮按钮被点击");
                 if(MainActivity.this.isPlaying){
                     MainActivity.this.musicBinder.pause();
                     MainActivity.this.isPlaying = false;
@@ -287,14 +288,14 @@ public class MainActivity extends BaseActivity {
         this.initMusicInfo();
         this.consoleEvent();
         this.seekBarEvent();
-        switch (this.config.getInt(UserConfig.PLAYMODEL,PlayModel.UNKNOUN)){
-            case PlayModel.LOOP :
+        switch (this.config.getInt(UserConfig.PLAYMODEL, PlayMode.UNKNOUN)){
+            case PlayMode.LOOP :
                 this.player_model.setImageDrawable(this.getResources().getDrawable(R.drawable.icon_loopd));
                 break;
-            case PlayModel.RANDOM :
+            case PlayMode.RANDOM :
                 this.player_model.setImageDrawable(this.getResources().getDrawable(R.drawable.icon_randomd));
                 break;
-            case PlayModel.SINGLE :
+            case PlayMode.SINGLE :
                 this.player_model.setImageDrawable(this.getResources().getDrawable(R.drawable.icon_singled));
                 break;
             default :
@@ -408,37 +409,37 @@ public class MainActivity extends BaseActivity {
             ImageButton btn = (ImageButton)view;
             switch (view.getId()){
                 case R.id.player_model :
-                    int model = MainActivity.this.config.getInt(UserConfig.PLAYMODEL,PlayModel.UNKNOUN);
+                    int model = MainActivity.this.config.getInt(UserConfig.PLAYMODEL, PlayMode.UNKNOUN);
                     SharedPreferences.Editor editor = MainActivity.this.config.edit();
                     OnMusicModelChangeMsg msg;
                     switch (model){
-                        case PlayModel.LOOP :{
+                        case PlayMode.LOOP :{
                             btn.setImageDrawable(MainActivity.this.getResources().getDrawable(R.drawable.icon_singled));
-                            editor.putInt(UserConfig.PLAYMODEL,PlayModel.SINGLE);
+                            editor.putInt(UserConfig.PLAYMODEL, PlayMode.SINGLE);
                             editor.commit();
                             msg = new OnMusicModelChangeMsg();
-                            msg.model = PlayModel.SINGLE;
+                            msg.model = PlayMode.SINGLE;
                             EventBus.getDefault().post(msg);
                             Toast.makeText(MainActivity.this,"已切换到单曲循环",Toast.LENGTH_SHORT).show();
                             break;
                         }
-                        case PlayModel.SINGLE :{
+                        case PlayMode.SINGLE :{
                             btn.setImageDrawable(MainActivity.this.getResources().getDrawable(R.drawable.icon_randomd));
-                            editor.putInt(UserConfig.PLAYMODEL,PlayModel.RANDOM);
+                            editor.putInt(UserConfig.PLAYMODEL, PlayMode.RANDOM);
                             editor.commit();
-                            Log.d("ZLogcat","MainActivity_361:PlayMode->"+PlayModel.RANDOM);
+                            Log.d("ZLogcat","MainActivity_361:PlayMode->"+ PlayMode.RANDOM);
                             msg = new OnMusicModelChangeMsg();
-                            msg.model = PlayModel.RANDOM;
+                            msg.model = PlayMode.RANDOM;
                             EventBus.getDefault().post(msg);
                             Toast.makeText(MainActivity.this,"已切换到随机播放",Toast.LENGTH_SHORT).show();
                             break;
                         }
-                        case PlayModel.RANDOM :{
+                        case PlayMode.RANDOM :{
                             btn.setImageDrawable(MainActivity.this.getResources().getDrawable(R.drawable.icon_loopd));
-                            editor.putInt(UserConfig.PLAYMODEL,PlayModel.LOOP);
+                            editor.putInt(UserConfig.PLAYMODEL, PlayMode.LOOP);
                             editor.commit();
                             msg = new OnMusicModelChangeMsg();
-                            msg.model = PlayModel.LOOP;
+                            msg.model = PlayMode.LOOP;
                             EventBus.getDefault().post(msg);
                             Toast.makeText(MainActivity.this,"已切换到列表循环",Toast.LENGTH_SHORT).show();
                             break;

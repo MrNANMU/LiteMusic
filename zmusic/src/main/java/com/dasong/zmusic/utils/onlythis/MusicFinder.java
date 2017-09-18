@@ -39,7 +39,7 @@ public class MusicFinder {
 
     private static int isMusic;//是否为音乐
 
-    public static List<Music> data;
+    public static final List<Music> data = new ArrayList<Music>();
 
     public static final List<Music> localMusicList  = new ArrayList<Music>();;
 
@@ -194,12 +194,11 @@ public class MusicFinder {
     }
 
     public static ArrayList<Music> getAll(Context context){
-        if(data == null){
+        if(data.size() == 0){
             Log.d("ZLogcat","MusicFinder.getAll->data==null");
-            data = MusicFinder.selectAll(context);
+            data.addAll(MusicFinder.selectAll(context));
             return (ArrayList<Music>)data;
         }else{
-            Log.d("ZLogcat","MusicFinder.getAll->data!=null");
             return (ArrayList<Music>)data;
         }
     }
